@@ -2,8 +2,8 @@ package com.aaronjwood.portauthority.activity;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -209,23 +209,23 @@ public abstract class HostActivity extends AppCompatActivity implements HostAsyn
 
                 Intent intent = null;
 
-                if (item.contains("80 -")) {
+                if (item.startsWith("80 -")) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + ip));
                 }
 
-                if (item.contains("443 -")) {
+                if (item.startsWith("443 -")) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + ip));
                 }
 
-                if (item.contains("8080 -")) {
+                if (item.startsWith("8080 -")) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + ip + ":8080"));
                 }
 
-                PackageManager packageManager = getPackageManager();
-                if (intent != null && packageManager != null) {
-                    if (packageManager.resolveActivity(intent, 0) != null) {
+                // resolveActivity() returns null on Android 11+ without a <queries> entry, so just try it.
+                if (intent != null) {
+                    try {
                         startActivity(intent);
-                    } else {
+                    } catch (ActivityNotFoundException e) {
                         Toast.makeText(getApplicationContext(), "No application found to open this to the browser!", Toast.LENGTH_SHORT).show();
                     }
                 }
