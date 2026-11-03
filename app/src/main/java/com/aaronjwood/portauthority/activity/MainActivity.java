@@ -541,7 +541,8 @@ public final class MainActivity extends AppCompatActivity implements MainAsyncRe
 
             // get the vendor of bssid using the oui db
             try {
-                wifiBssidVendor = Host.findMacVendor(wifiBssid, db);
+                // getBSSID() is null while the phone isn't associated with an access point.
+                wifiBssidVendor = wifiBssid == null ? "" : Host.findMacVendor(wifiBssid, db);
             } catch (SQLiteException | UnsupportedOperationException e) {
                 String failedBssidVendor = resources.getString(R.string.failedBssidVendor);
                 Errors.showError(context, failedBssidVendor);
