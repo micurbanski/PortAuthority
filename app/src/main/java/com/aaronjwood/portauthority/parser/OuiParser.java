@@ -18,6 +18,13 @@ public class OuiParser implements Parser {
 
         String[] data = line.split("\\t");
         String mac = data[0].trim().toLowerCase();
+        int slash = mac.indexOf('/');
+        if (slash != -1) {
+            // MA-M (/28) and MA-S (/36) blocks, e.g. "00:1b:c5:00:00/36" -> "00:1b:c5:00:0".
+            int digits = Integer.parseInt(mac.substring(slash + 1)) / 4;
+            mac = mac.substring(0, digits + (digits - 1) / 2);
+        }
+
         String vendor;
         if (data.length == 3) {
             vendor = data[2];

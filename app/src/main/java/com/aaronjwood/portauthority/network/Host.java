@@ -128,10 +128,17 @@ public class Host implements Serializable {
      * @throws SQLiteException
      */
     public static String findMacVendor(String mac, Database db) throws SQLiteException {
-        String prefix = mac.substring(0, 8);
-        String vendor = db.selectVendor(prefix);
-        if (vendor != null) {
-            return vendor;
+        // MA-S (/36) and MA-M (/28) blocks are carved out of an OUI the IEEE registers to itself,
+        // so the longest prefix has to win over the "IEEE Registration Authority" /24 entry.
+        for (int length : new int[]{13, 10, 8}) {
+            if (mac.length() < length) {
+                continue;
+            }
+
+            String vendor = db.selectVendor(mac.substring(0, length));
+            if (vendor != null) {
+                return vendor;
+            }
         }
 
         String notInDb = "Vendor not in database";
