@@ -3,6 +3,7 @@ package com.aaronjwood.portauthority.activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.aaronjwood.portauthority.R;
+import com.aaronjwood.portauthority.async.ScanPortsAsyncTask;
 import com.aaronjwood.portauthority.db.Database;
 import com.aaronjwood.portauthority.listener.ScanPortsListener;
 import com.aaronjwood.portauthority.network.Host;
@@ -43,6 +45,7 @@ public abstract class HostActivity extends AppCompatActivity implements HostAsyn
     protected ListView portList;
     protected final List<String> ports = Collections.synchronizedList(new ArrayList<>());
     protected ProgressDialog scanProgressDialog;
+    protected ScanPortsAsyncTask scanPortsTask;
     protected Dialog portRangeDialog;
     protected Handler handler;
     private Database db;
@@ -174,17 +177,31 @@ public abstract class HostActivity extends AppCompatActivity implements HostAsyn
                 UserPreference.savePortRangeStart(activity, startPort);
                 UserPreference.savePortRangeHigh(activity, stopPort);
 
-                scanProgressDialog = new ProgressDialog(activity, R.style.DialogTheme);
-                scanProgressDialog.setCancelable(false);
-                scanProgressDialog.setTitle("Scanning Port " + startPort + " to " + stopPort);
-                scanProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                scanProgressDialog.setProgress(0);
-                scanProgressDialog.setMax(stopPort - startPort + 1);
-                scanProgressDialog.show();
-
-                Host.scanPorts(ip, startPort, stopPort, timeout, activity);
+                showScanProgressDialog(startPort, stopPort);
+                scanPortsTask = Host.scanPorts(ip, startPort, stopPort, timeout, activity);
             }
         });
+    }
+
+    /**
+     * Shows the port scan progress dialog, with a button that stops the scan
+     *
+     * @param startPort The port the scan starts at
+     * @param stopPort  The port the scan stops at
+     */
+    protected void showScanProgressDialog(int startPort, int stopPort) {
+        scanProgressDialog = new ProgressDialog(this, R.style.DialogTheme);
+        scanProgressDialog.setCancelable(false);
+        scanProgressDialog.setTitle("Scanning Port " + startPort + " to " + stopPort);
+        scanProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        scanProgressDialog.setProgress(0);
+        scanProgressDialog.setMax(stopPort - startPort + 1);
+        scanProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.stopScan), (dialog, which) -> {
+            if (scanPortsTask != null) {
+                scanPortsTask.cancel(true);
+            }
+        });
+        scanProgressDialog.show();
     }
 
     /**

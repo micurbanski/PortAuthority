@@ -46,7 +46,8 @@ public class ScanPortsRunnable implements Runnable {
     public void run() {
         HostAsyncResponse activity = delegate.get();
         for (int i = startPort; i <= stopPort; i++) {
-            if (activity == null) {
+            // Interrupted when the user stops the scan.
+            if (activity == null || Thread.currentThread().isInterrupted()) {
                 return;
             }
 

@@ -113,9 +113,12 @@ public class Host implements Serializable {
      * @param stopPort  The port to stop scanning at
      * @param timeout   Socket timeout
      * @param delegate  Delegate to be called when the port scan has finished
+     * @return The running scan, so it can be cancelled
      */
-    public static void scanPorts(String ip, int startPort, int stopPort, int timeout, HostAsyncResponse delegate) {
-        new ScanPortsAsyncTask(delegate).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ip, startPort, stopPort, timeout);
+    public static ScanPortsAsyncTask scanPorts(String ip, int startPort, int stopPort, int timeout, HostAsyncResponse delegate) {
+        ScanPortsAsyncTask task = new ScanPortsAsyncTask(delegate);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ip, startPort, stopPort, timeout);
+        return task;
     }
 
     /**

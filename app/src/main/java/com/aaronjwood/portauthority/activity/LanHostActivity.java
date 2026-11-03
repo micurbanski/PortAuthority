@@ -107,15 +107,8 @@ public final class LanHostActivity extends HostActivity {
 
                 int startPort = 1;
                 int stopPort = 1024;
-                scanProgressDialog = new ProgressDialog(LanHostActivity.this, R.style.DialogTheme);
-                scanProgressDialog.setCancelable(false);
-                scanProgressDialog.setTitle("Scanning Port " + startPort + " to " + stopPort);
-                scanProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                scanProgressDialog.setProgress(0);
-                scanProgressDialog.setMax(1024);
-                scanProgressDialog.show();
-
-                Host.scanPorts(host.getIp(), startPort, stopPort, UserPreference.getLanSocketTimeout(getApplicationContext()), LanHostActivity.this);
+                showScanProgressDialog(startPort, stopPort);
+                scanPortsTask = Host.scanPorts(host.getIp(), startPort, stopPort, UserPreference.getLanSocketTimeout(getApplicationContext()), LanHostActivity.this);
             }
         });
     }
