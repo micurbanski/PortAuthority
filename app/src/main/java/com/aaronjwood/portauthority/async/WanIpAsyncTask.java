@@ -18,8 +18,9 @@ import okhttp3.ResponseBody;
 
 public class WanIpAsyncTask extends AsyncTask<Void, Void, String> {
 
-    // IP service is 100% open source https://github.com/aaronjwood/public-ip-api
-    private static final String EXTERNAL_IP_SERVICE = "https://yourip.aaronjwood.com/";
+    // Cloudflare's trace endpoint answers with key=value lines, one of them "ip=".
+    // The IPv4 literal keeps the answer IPv4 even when the phone also has IPv6.
+    private static final String EXTERNAL_IP_SERVICE = "https://1.1.1.1/cdn-cgi/trace";
     private final WeakReference<MainAsyncResponse> delegate;
 
     /**
@@ -51,7 +52,13 @@ public class WanIpAsyncTask extends AsyncTask<Void, Void, String> {
                 return ctx.getResources().getString(R.string.errExternIp);
             }
 
-            return body.string().trim();
+            for (String line : body.string().split("\n")) {
+                if (line.startsWith("ip=")) {
+                    return line.substring(3).trim();
+                }
+            }
+
+            return ctx.getResources().getString(R.string.errExternIp);
         } catch (IOException e) {
             return ctx.getResources().getString(R.string.errExternIp);
         }

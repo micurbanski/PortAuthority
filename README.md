@@ -39,8 +39,8 @@ This application makes *heavy* use of threading. Because most of the operations 
 
 ## How is my public IP discovered? I'm worried about my privacy
 
-I now use [my own service](https://github.com/aaronjwood/public-ip-api) that's 100% open source!
-I decided to create and switch to this due to some concerns about the original service that was being used.
+This fork asks Cloudflare's trace endpoint (`https://1.1.1.1/cdn-cgi/trace`), because the original
+[self-hosted service](https://github.com/aaronjwood/public-ip-api) no longer resolves.
 
 ## I have a lower end and/or older device, will this work?
 
@@ -90,7 +90,7 @@ This means that modifications need to be done either on a new branch based off o
 ## Privacy
 This app does not track, collect, or share any data it comes across with anyone or anything.
 There are no ads or analytics trackers in this software.
-The service used to determine your public IP address is [open source](https://github.com/aaronjwood/public-ip-api) and is 100% stateless.
+The public IP address is read from Cloudflare's trace endpoint, which is covered by [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
 
 ## Acknowledgements
 
