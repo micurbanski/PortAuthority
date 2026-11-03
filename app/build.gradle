@@ -17,6 +17,8 @@ android {
     viewBinding.enabled = true
     compileSdkVersion 31
     buildToolsVersion '30.0.3'
+    // r21 (the AGP 7.2 default) can't run ndk-build on Apple Silicon hosts; r25 is the last NDK supporting minSdk 19
+    ndkVersion '25.2.9519653'
 
     defaultConfig {
         minSdkVersion 19
