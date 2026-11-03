@@ -12,6 +12,7 @@
     <string name="hostDiscovery">Discover Hosts</string>
     <string name="ssid">SSID</string>
     <string name="bssid">BSSID</string>
+    <string name="bssidVendor">BSSID Vendor</string>
     <string name="scanWellKnownPorts">Scan Well-Known Ports</string>
     <string name="scanPortRange">Scan Port Range</string>
     <string name="resetPortRange">Reset Port Range</string>
@@ -49,6 +50,7 @@
     <string name="failedLinkSpeed">Failed to get link speed</string>
     <string name="failedSsid">Failed to get SSID</string>
     <string name="failedBssid">Failed to get BSSID</string>
+    <string name="failedBssidVendor">Failed to get BSSID vendor</string>
     <string name="failedWifiManager">Failed to get WifiManager for this device</string>
     <string name="noWifiInterface">No WiFi interface found</string>
     <string name="scanningDisclaimer">
